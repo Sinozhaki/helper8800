@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZEN HELPER - POP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Space Grotesk"', 'sans-serif'] },
+                    colors: {
+                        bg: '#e0e7ff',
+                        surface: '#ffffff',
+                        primary: '#8b5cf6',
+                        accent: '#facc15',
+                        dark: '#1e1b4b',
+                    },
+                    boxShadow: {
+                        'hard': '4px 4px 0px 0px #000000',
+                        'hard-sm': '2px 2px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f3f0ff; color: #000; }
+        
+        .brutal-card {
+            background: white; border: 2px solid black;
+            box-shadow: 4px 4px 0px 0px #000; transition: all 0.2s ease;
+        }
+        
+        .brutal-input {
+            background: #fff; border: 2px solid #000; color: #000; font-weight: 700; text-transform: uppercase;
+        }
+        .brutal-input:focus {
+            outline: none; background: #fff9c4; box-shadow: 2px 2px 0px 0px #000;
+        }
+
+        .btn-brutal {
+            background: #8b5cf6; color: white; border: 2px solid black;
+            font-weight: 700; text-transform: uppercase; box-shadow: 4px 4px 0px 0px #000;
+        }
+        .btn-brutal:active {
+            transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #000;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 8px; background: #000; border: none; color: #fff;
+            padding: 6px 10px; cursor: pointer; font-size: 11px; font-weight: bold;
+            border-right: 2px solid #000;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* --- ANIMASI MORPH IOS STYLE --- */
+        #joinModalContent, #userModalContent {
+            transform-origin: center center;
+            transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+            opacity: 0; transform: scale(0.5);
+        }
+        .show-modal #joinModalContent, .show-modal #userModalContent {
+            opacity: 1; transform: scale(1);
+        }
+        
+        /* Custom SweetAlert Input */
+        .swal2-input {
+            border: 2px solid #000 !important;
+            box-shadow: 2px 2px 0px #000 !important;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans relative overflow-x-hidden text-sm bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]">
+
+    <header class="p-4 flex justify-between items-center bg-white border-b-2 border-black sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-purple-500 border-2 border-black flex items-center justify-center text-white font-bold shadow-hard-sm">Z</div>
+            <div>
+                <h1 class="text-lg font-bold leading-none">ZEN HELPER</h1>
+                <p class="text-[10px] font-bold bg-yellow-300 inline-block px-1 border border-black mt-0.5">OFFICIAL TOOL</p>
+            </div>
+        </div>
+        <button onclick="toggleAdminPanel()" class="bg-black text-white p-2 border-2 border-black hover:bg-white hover:text-black transition-colors shadow-hard-sm">
+            <i class="ph-bold ph-gear text-xl"></i>
+        </button>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 max-w-lg relative z-10 pb-24">
+        
+        <div class="brutal-card p-5 mb-6 rounded-none">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="ph-fill ph-megaphone text-2xl text-purple-600"></i>
+                <h2 class="font-bold text-base uppercase">Program Helper Zen</h2>
+            </div>
+            <p class="text-xs font-medium border-t-2 border-black pt-2">
+                Program helper zen, bantu member memulihkan akun dan dapatkan bonus setiap berhasil membantu memulihkan akun.
+            </p>
+        </div>
+
+        <div class="brutal-card p-5 mb-6 bg-red-100 border-2 border-black">
+            <h3 class="font-black text-lg uppercase mb-3 flex items-center gap-2 border-b-2 border-black pb-2">
+                <i class="ph-bold ph-warning-circle text-red-600"></i> RULES WAJIB
+            </h3>
+            <ul class="space-y-3 text-xs font-bold list-none">
+                <li class="flex items-start gap-2">
+                    <span class="bg-black text-white px-1.5 py-0.5 text-[10px] shrink-0">1</span>
+                    <span><span class="text-red-600 uppercase">Screenshot Wajib:</span> Helper harus merekam percakapan. Tidak ada screenshot lengkap = <span class="bg-red-500 text-white px-1">TIDAK VALID</span>.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="bg-black text-white px-1.5 py-0.5 text-[10px] shrink-0">2</span>
+                    <span><span class="text-red-600 uppercase">Ada Arahan:</span> Harus ada chat memberi arahan. Jika tiba-tiba akun pulih tanpa konteks = <span class="bg-red-500 text-white px-1">TIDAK VALID</span>.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="bg-black text-white px-1.5 py-0.5 text-[10px] shrink-0">3</span>
+                    <span><span class="text-red-600 uppercase">No Freeze:</span> Akun harus benar-benar pulih (bebas banned & freeze).</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="bg-black text-white px-1.5 py-0.5 text-[10px] shrink-0">4</span>
+                    <span><span class="text-red-600 uppercase">Wajib Catat Web:</span> Helper wajib mencatat email di web (klik tombol plus > masukan email > pilih nama helper). Gak dicatet = <span class="bg-red-500 text-white px-1">GA VALID</span>. Asal-asalan isi = <span class="bg-black text-white px-1">CUT</span>.</span>
+                </li>
+            </ul>
+
+            <div class="mt-4 bg-cyan-200 border-2 border-black p-3 shadow-hard-sm relative">
+                <div class="absolute -top-3 left-3 bg-black text-white px-2 text-[10px] font-black border-2 border-white transform rotate-2">CARA CEK FREEZE</div>
+                <p class="text-[11px] leading-relaxed font-bold mt-1">
+                    Buka <b>Pengaturan</b> > <b>Preferensi Akun</b> > <b>Hapus Akun</b>.
+                </p>
+                <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+                    <div class="bg-green-100 border-2 border-black p-1 text-center">
+                        <span class="block font-black text-green-700">✅ NORMAL</span>
+                        Ada tombol "Lanjutkan".
+                    </div>
+                    <div class="bg-red-100 border-2 border-black p-1 text-center">
+                        <span class="block font-black text-red-600">❌ FREEZE</span>
+                        Error / Tidak ada opsi.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4 mb-8">
+            <button id="btnJoinTrigger" onclick="openJoinModal()" class="w-full bg-green-400 text-black border-2 border-black font-black py-4 shadow-hard hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-hard-sm transition-all flex items-center justify-center gap-2 text-sm uppercase group active:scale-95">
+                <i class="ph-bold ph-handshake text-xl group-hover:scale-110 transition-transform"></i>
+                GABUNG TEAM HELPER
+            </button>
+
+            <div class="bg-yellow-300 border-2 border-black p-3 text-[10px] font-bold text-center transform -rotate-1 shadow-sm leading-tight">
+                ⚠️ <span class="uppercase text-red-600 font-black">PERINGATAN:</span><br>
+                KHUSUS YANG NGERTI AJA. YANG GAK NGERTI CARA BANTUINNYA ATAU MASIH TANYA-TANYA ADMIN CARANYA GIMANA BAKAL <span class="bg-black text-white px-1">DICUEKIN</span>.
+            </div>
+
+            <a href="https://chat.whatsapp.com/FKgnqmXVRn5517PuxK9U5i" target="_blank" class="w-full bg-cyan-400 text-black border-2 border-black font-black py-4 shadow-hard hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-hard-sm transition-all flex items-center justify-center gap-2 text-sm uppercase group active:scale-95 no-underline">
+                <i class="ph-bold ph-users-three text-xl group-hover:scale-110 transition-transform"></i>
+                GABUNG GRUP OPEN RESTRIC
+            </a>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex justify-between items-center border-b-2 border-black pb-2">
+                <h3 class="text-sm font-black uppercase tracking-wider bg-black text-white inline-block px-2 py-1 transform -rotate-1 border-2 border-white shadow-hard-sm">Aktivitas Terbaru</h3>
+            </div>
+            
+            <div class="relative">
+                <i class="ph-bold ph-magnifying-glass absolute left-3 top-3 text-gray-500"></i>
+                <input type="text" id="publicSearch" oninput="handlePublicSearch(this.value)" placeholder="CARI EMAIL..." class="brutal-input w-full pl-9 pr-3 py-2 text-sm border-2 border-black shadow-hard-sm placeholder-gray-400">
+            </div>
+
+            <div id="loadingIndicator" class="text-center text-xs font-bold animate-bounce py-6">MEMUAT DATABASE...</div>
+            <div id="publicList" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 right-6 z-40">
+        <button id="btnUserTrigger" onclick="openUserModal()" class="flex items-center justify-center w-16 h-16 bg-yellow-400 border-2 border-black shadow-hard hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-hard-sm transition-all rounded-full active:scale-90">
+            <i class="ph-bold ph-plus text-2xl text-black"></i>
+        </button>
+    </div>
+
+    <div id="joinModal" class="fixed inset-0 bg-green-400/90 z-[65] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div id="joinModalContent" class="bg-white w-full max-w-sm border-2 border-black shadow-hard p-6 relative">
+            <button onclick="closeJoinModal()" class="absolute -top-4 -right-4 bg-red-500 text-white w-10 h-10 border-2 border-black shadow-hard-sm flex items-center justify-center hover:scale-95"><i class="ph-bold ph-x text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-green-400 border-2 border-black rounded-full flex items-center justify-center mx-auto mb-2"><i class="ph-bold ph-whatsapp-logo text-2xl"></i></div>
+                <h3 class="text-xl font-black uppercase">Daftar Helper</h3>
+                <p class="text-xs font-bold text-gray-500">Isi nama panggilanmu untuk lanjut ke WhatsApp</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="joinName" placeholder="TULIS NAMA PANGGILAN..." class="brutal-input w-full px-4 py-3 text-center text-sm placeholder-gray-400">
+                <button onclick="joinWhatsapp()" class="w-full bg-black text-white border-2 border-black font-bold py-3 shadow-hard-sm hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2 uppercase">KIRIM PESAN WA <i class="ph-bold ph-paper-plane-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="userModal" class="fixed inset-0 bg-yellow-400/90 z-[60] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div id="userModalContent" class="bg-white w-full max-w-sm border-2 border-black shadow-hard p-6 relative">
+            <button onclick="closeUserModal()" class="absolute -top-4 -right-4 bg-red-500 text-white w-10 h-10 border-2 border-black shadow-hard-sm flex items-center justify-center hover:scale-95"><i class="ph-bold ph-x text-xl"></i></button>
+            <h3 class="text-xl font-black mb-6 border-b-2 border-black pb-2 uppercase">Input Data Baru</h3>
+            <form id="userForm" onsubmit="handleUserSubmit(event)" class="space-y-4 max-h-[70vh] overflow-y-auto">
+                <div>
+                    <label class="font-bold text-xs uppercase block mb-1">Email Akun</label>
+                    <input type="email" id="u_email" required class="brutal-input w-full px-3 py-2 text-sm" placeholder="user@email.com">
+                </div>
+                
+                <div>
+                    <label class="font-bold text-xs uppercase block mb-1">Nama Helper</label>
+                    <select id="u_helper" required class="brutal-input w-full px-3 py-2 text-sm bg-white">
+                        <option value="" disabled selected>-- PILIH HELPER --</option>
+                        </select>
+                </div>
+
+                <div class="bg-purple-100 border-2 border-black p-3 border-dashed">
+                    <label class="font-bold text-xs uppercase block mb-2">Bukti Gambar (Max 5)</label>
+                    <input type="file" id="fileInput" accept="image/*" multiple class="w-full text-xs font-bold mb-2">
+                    <div id="previewContainer" class="grid grid-cols-5 gap-1"></div>
+                    <p id="uploadStatusText" class="text-[10px] font-bold bg-black text-white px-2 py-1 mt-2 inline-block hidden">UPLOADING...</p>
+                </div>
+                <button type="submit" id="btnSubmitUser" class="w-full py-3 btn-brutal mt-4 hover:bg-purple-600">Kirim Data</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="fixed inset-0 bg-white z-[70] hidden flex flex-col transform translate-y-full transition-transform duration-300 border-l-4 border-black">
+        <header class="p-5 border-b-2 border-black flex justify-between items-center bg-yellow-300">
+            <h2 class="text-lg font-black uppercase">Admin Panel</h2>
+            <button onclick="toggleAdminPanel()" class="text-xs font-bold border-2 border-black px-3 py-1 bg-white hover:bg-black hover:text-white transition shadow-hard-sm">CLOSE</button>
+        </header>
+        
+        <div class="flex-grow overflow-y-auto p-5 pb-20 space-y-8 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]">
+            
+            <div class="bg-white p-4 border-2 border-black shadow-hard">
+                <h3 class="text-xs font-black mb-3 uppercase bg-purple-500 text-white inline-block px-2">KELOLA LIST HELPER</h3>
+                <form onsubmit="handleAddHelper(event)" class="flex gap-2 mb-4">
+                    <input type="text" id="new_helper_name" placeholder="NAMA HELPER BARU..." class="brutal-input w-full px-3 py-2 text-sm" required>
+                    <button type="submit" class="bg-purple-500 text-white border-2 border-black font-bold px-4 py-2 shadow-hard hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+                        <i class="ph-bold ph-plus"></i>
+                    </button>
+                </form>
+                <div id="adminHelperList" class="flex flex-wrap gap-2">
+                    </div>
+            </div>
+
+            <div class="relative mb-4">
+                <i class="ph-bold ph-magnifying-glass absolute left-3 top-3 text-gray-500"></i>
+                <input type="text" oninput="handleAdminSearch(this.value)" placeholder="CARI EMAIL / HELPER..." class="brutal-input w-full pl-9 pr-3 py-2 text-sm border-2 border-black shadow-hard-sm">
+            </div>
+
+            <div class="bg-white p-4 border-2 border-black shadow-hard">
+                <h3 class="text-xs font-black mb-3 uppercase bg-black text-white inline-block px-2">Tambah Manual</h3>
+                <form onsubmit="handleAdminSubmit(event)" class="space-y-3">
+                    <input type="email" id="a_email" placeholder="Email" class="brutal-input px-3 py-2 w-full text-sm" required>
+                    <div class="flex gap-2">
+                        <select id="a_helper" class="brutal-input px-3 py-2 w-full text-sm bg-white" required>
+                             <option value="" disabled selected>-- PILIH HELPER --</option>
+                        </select>
+                        <select id="a_status" class="brutal-input px-2 py-2 w-1/3 text-sm">
+                            <option value="SUCCES HELPER">SUKSES</option>
+                            <option value="PENDING">PENDING</option>
+                            <option value="FAILED">GAGAL</option>
+                        </select>
+                    </div>
+                    <div class="bg-gray-100 border-2 border-black border-dashed p-2">
+                        <input type="file" id="a_fileInput" accept="image/*" multiple class="w-full text-xs font-bold">
+                        <p id="a_uploadStatus" class="text-[10px] text-gray-500 font-bold mt-1 hidden">Uploading...</p>
+                    </div>
+                    <button type="submit" id="btnAdminSubmit" class="w-full bg-green-500 text-black border-2 border-black font-bold py-2 shadow-hard hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">TAMBAH DATA</button>
+                </form>
+            </div>
+
+            <div>
+                 <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xs font-black uppercase">Database List</h3>
+                    <span id="dataCount" class="bg-black text-white px-3 py-1 font-bold rounded-full border-2 border-black text-xs">0</span>
+                </div>
+                <div id="adminCardList" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 z-[80] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm p-5 border-2 border-black shadow-hard max-h-[90vh] overflow-y-auto">
+            <h3 class="text-sm font-black mb-4 uppercase text-center bg-yellow-300 border-2 border-black py-1">Edit Data</h3>
+            <input type="hidden" id="edit_index">
+            <div class="space-y-3">
+                <input type="text" id="edit_email" class="brutal-input w-full p-2 text-sm">
+                <select id="edit_helper" class="brutal-input w-full p-2 text-sm bg-white"></select>
+                <select id="edit_status" class="brutal-input w-full p-2 text-sm">
+                    <option value="SUCCES HELPER">SUCCES HELPER</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="FAILED">FAILED</option>
+                </select>
+                <div class="border-2 border-black p-2 bg-gray-50">
+                    <label class="text-[10px] font-black uppercase mb-2 block">Kelola Foto:</label>
+                    <div id="editImagePreview" class="grid grid-cols-4 gap-2 mb-3"></div>
+                    <label class="text-[10px] font-bold block mb-1">+ Tambah Foto Baru</label>
+                    <input type="file" id="edit_fileInput" accept="image/*" multiple class="w-full text-xs font-bold">
+                    <p id="edit_uploadStatus" class="text-[10px] font-bold text-purple-600 mt-1 hidden">Uploading...</p>
+                </div>
+                <div class="flex gap-2 mt-4">
+                    <button onclick="document.getElementById('editModal').classList.add('hidden')" class="flex-1 py-2 bg-gray-200 border-2 border-black font-bold text-xs hover:bg-gray-300">BATAL</button>
+                    <button id="btnSaveEdit" onclick="saveEdit()" class="flex-1 py-2 bg-purple-500 text-white border-2 border-black font-bold text-xs hover:bg-purple-600">SIMPAN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_CONFIG = { url: "https://api.jsonbin.io/v3/b/69818227d0ea881f409cbe4a", key: "$2a$10$4v5UzmjJBEf7T6RUlR7CfeJERCrf/waXNcO7pxUk3OYGOzBNLJ7Fy" };
+        let localData = { users: [], helpers: [] }; let uploadedImageUrls = []; let tempEditImages = [];
+
+        // --- ANIMATIONS ---
+        function toggleMorphModal(modalId, contentId, triggerId, action) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(contentId);
+            if (action === 'open') {
+                const btn = document.getElementById(triggerId);
+                modal.classList.remove('hidden');
+                const rect = btn.getBoundingClientRect();
+                const originX = rect.left + rect.width / 2;
+                const originY = rect.top + rect.height / 2;
+                content.style.transformOrigin = `${originX}px ${originY}px`;
+                requestAnimationFrame(() => modal.classList.add('show-modal'));
+            } else {
+                modal.classList.remove('show-modal');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function openJoinModal() { toggleMorphModal('joinModal', 'joinModalContent', 'btnJoinTrigger', 'open'); }
+        function closeJoinModal() { toggleMorphModal('joinModal', 'joinModalContent', 'btnJoinTrigger', 'close'); }
+        function openUserModal() { toggleMorphModal('userModal', 'userModalContent', 'btnUserTrigger', 'open'); }
+        function closeUserModal() { toggleMorphModal('userModal', 'userModalContent', 'btnUserTrigger', 'close'); }
+
+        // --- CORE FUNCTIONS ---
+        async function fetchData() { 
+            try { 
+                const res = await fetch(API_CONFIG.url, { headers: { "X-Master-Key": API_CONFIG.key } }); 
+                const data = await res.json(); 
+                localData = data.record || data; 
+                
+                // Initialize Arrays
+                if(!localData.users) localData.users = [];
+                if(!localData.helpers) localData.helpers = []; 
+
+                document.getElementById('loadingIndicator').classList.add('hidden'); 
+                
+                renderPublicList(); 
+                renderAdminCards();
+                renderHelperOptions(); // Fill Select Boxes
+                renderAdminHelpers(); // Fill Admin List
+            } catch (e) { console.error(e); } 
+        }
+
+        async function saveData() { try { await fetch(API_CONFIG.url, { method: "PUT", headers: { "Content-Type": "application/json", "X-Master-Key": API_CONFIG.key }, body: JSON.stringify(localData) }); Swal.fire({ icon: 'success', title: 'TERSIMPAN', timer: 1000, showConfirmButton: false, confirmButtonColor:'#000' }); fetchData(); } catch (e) {} }
+
+        // --- HELPER MANAGEMENT LOGIC ---
+        function renderHelperOptions() {
+            const selects = ['u_helper', 'a_helper', 'edit_helper'];
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if(!el) return;
+                const currentVal = el.value; // preserve value if possible
+                el.innerHTML = '<option value="" disabled selected>-- PILIH HELPER --</option>';
+                localData.helpers.forEach(name => {
+                    el.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+                if(currentVal) el.value = currentVal;
+            });
+        }
+
+        function renderAdminHelpers() {
+            const container = document.getElementById('adminHelperList');
+            container.innerHTML = '';
+            localData.helpers.forEach((name, index) => {
+                container.innerHTML += `
+                    <div class="bg-gray-100 border-2 border-black px-2 py-1 flex items-center gap-2 text-xs font-bold uppercase">
+                        ${name}
+                        <button onclick="deleteHelper(${index})" class="text-red-600 hover:text-red-800"><i class="ph-bold ph-trash"></i></button>
+                    </div>`;
+            });
+        }
+
+        async function handleAddHelper(e) {
+            e.preventDefault();
+            const input = document.getElementById('new_helper_name');
+            const name = input.value.trim().toUpperCase();
+            if(!name) return;
+            if(localData.helpers.includes(name)) { Swal.fire({icon:'error', title:'SUDAH ADA', confirmButtonColor:'#000'}); return; }
+            
+            localData.helpers.push(name);
+            await saveData();
+            input.value = '';
+        }
+
+        async function deleteHelper(index) {
+            Swal.fire({title: 'HAPUS HELPER?', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText:'HAPUS'}).then(async (r) => {
+                if(r.isConfirmed) {
+                    localData.helpers.splice(index, 1);
+                    await saveData();
+                }
+            });
+        }
+
+        // --- SUBMIT HANDLERS ---
+        async function handleUserSubmit(e) { e.preventDefault();
+            const helperVal = document.getElementById('u_helper').value;
+            if(!helperVal) { Swal.fire({icon:'warning', title:'PILIH HELPER DULU', confirmButtonColor:'#000'}); return; }
+            if(fileInput.files.length > 0 && userUploadedUrls.length === 0) return;
+            
+            document.getElementById('btnSubmitUser').innerHTML = 'MENGIRIM...'; document.getElementById('btnSubmitUser').disabled = true;
+            
+            localData.users.push({ date: new Date().toLocaleDateString('id-ID'), email: document.getElementById('u_email').value, helper: helperVal, status: "PENDING", images: userUploadedUrls });
+            
+            await saveData(); 
+            closeUserModal(); document.getElementById('userForm').reset(); previewContainer.innerHTML = ''; userUploadedUrls = []; document.getElementById('uploadStatusText').classList.add('hidden'); document.getElementById('btnSubmitUser').innerHTML = 'KIRIM DATA'; document.getElementById('btnSubmitUser').disabled = false;
+        }
+
+        async function handleAdminSubmit(e) { e.preventDefault();
+            const helperVal = document.getElementById('a_helper').value;
+            if(!helperVal) { Swal.fire({icon:'warning', title:'PILIH HELPER DULU', confirmButtonColor:'#000'}); return; }
+
+            const btn = document.getElementById('btnAdminSubmit'); btn.innerHTML = 'UPLOADING...'; btn.disabled = true;
+            const fileIn = document.getElementById('a_fileInput');
+            let adminUrls = []; if (fileIn.files.length > 0) adminUrls = await uploadFilesToCloudinary(fileIn.files, "a_uploadStatus");
+            localData.users.push({ date: new Date().toLocaleDateString('id-ID'), email: document.getElementById('a_email').value, helper: helperVal, status: document.getElementById('a_status').value, images: adminUrls });
+            await saveData(); e.target.reset(); document.getElementById('a_uploadStatus').classList.add('hidden'); btn.innerHTML = 'TAMBAH DATA'; btn.disabled = false;
+        }
+
+        // --- UPLOAD & WA ---
+        async function uploadFilesToCloudinary(files, statusElementId) {
+            if (files.length === 0) return [];
+            const statusEl = document.getElementById(statusElementId);
+            if(statusEl) { statusEl.classList.remove('hidden'); statusEl.innerText = `Mengupload ${files.length} gambar...`; }
+            const uploadPromises = Array.from(files).map(async (file) => {
+                const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", "xv0tqoe8");
+                try { const res = await fetch("https://api.cloudinary.com/v1_1/dsuk4te3f/image/upload", { method: "POST", body: formData }); const data = await res.json(); return data.secure_url; } catch (err) { return null; }
+            });
+            const results = await Promise.all(uploadPromises);
+            if(statusEl) statusEl.innerText = "Selesai!";
+            return results.filter(url => url !== null);
+        }
+
+        function joinWhatsapp() {
+            const n = document.getElementById('joinName').value;
+            if (!n) { Swal.fire({title: "NAMA KOSONG!", text: "Isi nama dulu.", icon: "warning", confirmButtonColor: "#000", customClass: {popup: 'border-2 border-black shadow-hard'}}); return; }
+            window.open(`https://wa.me/6289513304878?text=${encodeURIComponent(`hallo admin zen, saya mau jadi helper dong ini nama saya ${n}`)}`, '_blank');
+            closeJoinModal();
+        }
+
+        // --- SEARCH ---
+        function handlePublicSearch(query) { const lowerQ = query.toLowerCase(); const filtered = localData.users.filter(u => u.email.toLowerCase().includes(lowerQ)); renderPublicList(filtered); }
+        function handleAdminSearch(query) { const lowerQ = query.toLowerCase(); const filtered = localData.users.filter(u => u.email.toLowerCase().includes(lowerQ) || u.helper.toLowerCase().includes(lowerQ)); renderAdminCards(filtered); }
+
+        const fileInput = document.getElementById("fileInput"); const previewContainer = document.getElementById("previewContainer"); 
+        let userUploadedUrls = [];
+        fileInput.addEventListener("change", async () => {
+            const files = fileInput.files; if (files.length > 5) { Swal.fire({title: "MAX 5", icon:"error"}); fileInput.value=""; return;}
+            previewContainer.innerHTML = ''; userUploadedUrls = await uploadFilesToCloudinary(files, "uploadStatusText");
+            userUploadedUrls.forEach(url => previewContainer.innerHTML += `<div class="aspect-square border-2 border-black bg-white"><img src="${url}" class="w-full h-full object-cover"></div>`);
+        });
+
+        // --- EDIT ---
+        function openEditModal(i) { 
+            const u = localData.users[i]; 
+            document.getElementById('edit_index').value=i; 
+            document.getElementById('edit_email').value=u.email; 
+            // Handle helper select
+            const helperSelect = document.getElementById('edit_helper');
+            helperSelect.value = u.helper; 
+            
+            document.getElementById('edit_status').value=u.status; 
+            tempEditImages = [...(u.images || (u.image ? [u.image] : []))]; 
+            renderEditImages(); 
+            document.getElementById('editModal').classList.remove('hidden'); 
+        }
+        function renderEditImages() { const c = document.getElementById('editImagePreview'); c.innerHTML = ''; tempEditImages.forEach((url, idx) => c.innerHTML += `<div class="relative w-12 h-12 border border-black group"><img src="${url}" class="w-full h-full object-cover"><button onclick="tempEditImages.splice(${idx},1);renderEditImages()" class="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] border border-black">x</button></div>`); }
+        async function saveEdit() { 
+            const i = document.getElementById('edit_index').value; const btn = document.getElementById('btnSaveEdit'); btn.innerText = 'SAVING...'; btn.disabled = true;
+            const fileIn = document.getElementById('edit_fileInput');
+            let newUrls = []; if(fileIn.files.length > 0) newUrls = await uploadFilesToCloudinary(fileIn.files, "edit_uploadStatus");
+            localData.users[i].email=document.getElementById('edit_email').value; 
+            localData.users[i].helper=document.getElementById('edit_helper').value; 
+            localData.users[i].status=document.getElementById('edit_status').value; 
+            localData.users[i].images = [...tempEditImages, ...newUrls]; delete localData.users[i].image;
+            await saveData(); document.getElementById('editModal').classList.add('hidden'); document.getElementById('edit_fileInput').value=""; document.getElementById('edit_uploadStatus').classList.add('hidden'); btn.innerText='SIMPAN'; btn.disabled=false;
+        }
+
+        // --- RENDER ---
+        function renderPublicList(data = localData.users) {
+            const container = document.getElementById('publicList'); container.innerHTML = '';
+            if(data.length === 0) { container.innerHTML = '<div class="text-center text-xs font-bold text-gray-400 py-4">TIDAK DITEMUKAN</div>'; return; }
+            data.slice().reverse().forEach(user => {
+                let imgList = user.images || (user.image ? [user.image] : []);
+                let imgSection = imgList.length > 0 ? `<div class="mt-3 flex gap-1 overflow-x-auto no-scrollbar border-t-2 border-black pt-2 bg-gray-50 p-2">` + imgList.map(u => `<img onclick="showImage('${u}')" src="${u}" class="h-8 w-8 border-2 border-black object-cover cursor-pointer hover:scale-110 transition">`).join('') + `</div>` : '';
+                const color = user.status === 'SUCCES HELPER' ? 'bg-green-400' : 'bg-yellow-400';
+                container.innerHTML += `<div class="brutal-card p-3 mb-3"><div class="flex justify-between items-start"><div><div class="font-black text-sm">${user.email}</div><div class="text-[10px] font-bold text-gray-600 mt-1 uppercase">HELPER: ${user.helper}</div></div><div class="text-right"><span class="px-2 py-0.5 border-2 border-black text-[10px] font-black ${color}">${user.status}</span><div class="text-[9px] font-bold mt-1">${user.date}</div></div></div>${imgSection}</div>`;
+            });
+        }
+
+        function renderAdminCards(data = localData.users) {
+            const container = document.getElementById('adminCardList'); container.innerHTML = ''; document.getElementById('dataCount').innerText = data.length;
+            if(data.length === 0) { container.innerHTML = '<div class="text-center text-xs font-bold text-gray-400 py-4">TIDAK DITEMUKAN</div>'; return; }
+            data.slice().reverse().forEach((user) => {
+                const originalIndex = localData.users.indexOf(user); 
+                let imgList = user.images || (user.image ? [user.image] : []);
+                const isSuccess = user.status === 'SUCCES HELPER'; const statusClass = isSuccess ? 'bg-green-400' : 'bg-yellow-400';
+                const imgBtn = imgList.length > 0 ? `<button onclick="showGallery(${originalIndex})" class="bg-blue-200 border-2 border-black text-xs py-1.5 font-bold hover:bg-blue-300">FOTO (${imgList.length})</button>` : `<button disabled class="bg-gray-200 border-2 border-gray-400 text-gray-500 text-xs py-1.5 cursor-not-allowed">KOSONG</button>`;
+                container.innerHTML += `<div class="bg-white p-4 border-2 border-black shadow-hard mb-4"><div class="flex justify-between mb-2"><span class="font-black text-sm">${user.email}</span><span class="text-[10px] font-bold bg-black text-white px-1">${user.date}</span></div><div class="flex justify-between mb-4"><span class="text-xs font-bold uppercase">${user.helper}</span><span class="px-2 py-0.5 border-2 border-black text-[10px] font-black ${statusClass}">${user.status}</span></div><div class="grid grid-cols-3 gap-2">${imgBtn}<button onclick="openEditModal(${originalIndex})" class="bg-gray-100 border-2 border-black text-xs py-1.5 font-bold hover:bg-gray-200">EDIT</button><button onclick="deleteUser(${originalIndex})" class="bg-red-400 border-2 border-black text-xs py-1.5 font-bold hover:bg-red-500">DEL</button></div></div>`;
+            });
+        }
+
+        function showImage(src) { Swal.fire({ imageUrl: src, showConfirmButton: false, confirmButtonColor: '#000', width: '90%' }); }
+        function showGallery(index) { const u = localData.users[index]; const imgs = u.images || (u.image ? [u.image] : []); Swal.fire({ html: `<div class="grid grid-cols-2 gap-2">${imgs.map(u => `<img src="${u}" class="w-full border-2 border-black">`).join('')}</div>`, confirmButtonColor: '#000', width: '90%' }); }
+        function deleteUser(i) { Swal.fire({ title: 'HAPUS DATA?', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText:'YA, HAPUS', cancelButtonText:'BATAL' }).then((r) => { if(r.isConfirmed){ localData.users.splice(i, 1); saveData(); } }); }
+        function toggleAdminPanel() { const p = document.getElementById('adminPanel'); if(!p.classList.contains('hidden')) { p.classList.add('translate-y-full'); setTimeout(()=>p.classList.add('hidden'),300); return; } Swal.fire({title:'ADMIN LOGIN', input:'password', confirmButtonColor:'#000', customClass:{popup:'border-2 border-black shadow-hard'}}).then((r)=>{ if(r.isConfirmed && r.value==='2003'){ p.classList.remove('hidden'); setTimeout(()=>p.classList.remove('translate-y-full'),10); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Welcome Admin', showConfirmButton:false, timer:1500}); } else if(r.isConfirmed){ Swal.fire({icon:'error', title:'WRONG PASS', confirmButtonColor:'#000'}); } }); }
+
+        window.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+</html>
